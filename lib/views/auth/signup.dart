@@ -1,11 +1,14 @@
+import 'package:banreda_chat/helper/helperfunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:email_validator/email_validator.dart';
+import 'dart:collection';
 
 import '../../main.dart';
 import '../../utils/utils.dart';
 import '../../widgets/widget.dart';
+import '../../services/database.dart';
 
 class SignUp extends StatefulWidget {
   final Function() onClickedSignIn;
@@ -21,6 +24,9 @@ class _SignUpState extends State<SignUp> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final usernameController = TextEditingController();
+
+   DataBaseMethods dataBaseMethods = DataBaseMethods();
+   
 
   @override
   void dispose() {
@@ -119,12 +125,19 @@ class _SignUpState extends State<SignUp> {
     );
   }
   Future signUp() async {
+    Map<String,String> userInfoMap = {
+      "name" : usernameController.text,
+      "email" :emailController.text
+    };
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => const Center(child: CircularProgressIndicator())
     );
-
+    
+    HelperFunctions.saveUserEmailSharedPreference(emailController.text);
+    HelperFunctions.saveUserEmailSharedPreference(usernameController.text);
+    
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
@@ -132,10 +145,10 @@ class _SignUpState extends State<SignUp> {
       );
     } on FirebaseAuthException catch(e) {
       print(e);
-
       Utils.showSnackBar(e.message);
     }
-
+    dataBaseMethods.uploadUserInfo(userInfoMap);
+    HelperFunctions.saveUserLoggedInSharedPreference(true);
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }
