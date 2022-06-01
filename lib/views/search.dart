@@ -1,31 +1,25 @@
-// import 'package:path/path.dart' as Path;
-import 'package:banreda_chat/helper/helperfunctions.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:banreda_chat/services/database.dart';
 import 'package:banreda_chat/views/conversation_screen.dart';
 import 'package:banreda_chat/widgets/widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:banreda_chat/helper/constants.dart';
+
 
 class SearchScreen extends StatefulWidget{
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
-
 }
-
-String _myName = "";
 
 class _SearchScreenState extends State<SearchScreen> {
 
   DataBaseMethods dataBaseMethods = DataBaseMethods();
-  TextEditingController searchTextEditingController = new TextEditingController();
+  TextEditingController searchTextEditingController = TextEditingController();
 
-   QuerySnapshot? searchSnapshot;
-
+  QuerySnapshot? searchSnapshot;
 
   initiateSearch(){
     dataBaseMethods.getUserByUserName(searchTextEditingController.text).then((val){
@@ -35,14 +29,13 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-
   Widget searchList(){
     if (searchSnapshot != null) {
       return ListView.builder(
         itemCount: searchSnapshot!.docs.length,
         shrinkWrap: true,
         itemBuilder: (context, index){
-          return SearchTitle(
+          return searchTitle(
             userName: searchSnapshot!.docs[index]["name"],
             userEmail: searchSnapshot!.docs[index]["email"],
           );
@@ -56,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
   createChatroomAndStartConversation( String userName){
     if(userName != Constants.myName) {
       if(Constants.myName.isEmpty){
-        print("Fuck");
+        print("Name not found");
       }
       String chatRoomId = getChatRoomId(userName, Constants.myName);
       List<String> users = [userName, Constants.myName];
@@ -66,32 +59,34 @@ class _SearchScreenState extends State<SearchScreen> {
       };
       DataBaseMethods().createChatRoom(chatRoomId, chatRoomMap);
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const ConversationScreen()));
-    }else{
+          MaterialPageRoute(builder: (context) => ConversationScreen(
+            chatRoomId: chatRoomId
+          )));
+    } else {
       print("You cannot send message to yourself");
     }
   }
 
 
-  Widget SearchTitle( {String? userName, String? userEmail}){
+  Widget searchTitle( {String? userName, String? userEmail}){
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
         child: Row(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(userName!, style: TextStyle(
+                Text(userName!, style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold
                 ),),
-                Text(userEmail!, style: TextStyle(
+                Text(userEmail!, style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold
                 ),)
               ],
             ),
-            Spacer(),
+            const Spacer(),
             GestureDetector(
               onTap: (){
                 createChatroomAndStartConversation(userName);
@@ -101,8 +96,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     color: Colors.yellow,
                     borderRadius: BorderRadius.circular(30)
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 16,  vertical: 8),
-                child: Text("Message", style: TextStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 16,  vertical: 8),
+                child: const Text("Message", style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),),
               ),
@@ -118,8 +113,6 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,15 +121,15 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: [
             Container(
-              color: Color(0xFF0D47A1),
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              color: const Color(0xFF0D47A1),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 children: [
                   Expanded(
                     child:  TextField(
                         controller: searchTextEditingController,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
                         hintText: "search username...",
                         hintStyle: TextStyle(color: Colors.white54),
                         border: InputBorder.none
@@ -145,21 +138,20 @@ class _SearchScreenState extends State<SearchScreen> {
                   GestureDetector(
                     onTap: (){
                       initiateSearch();
-                      print("work");
                     },
                     child: Container(
                       height: 40,
                         width: 40,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             colors: [
-                              const Color(0xFFB71C1C),
-                              const Color(0xFF000000)
+                              Color(0xFFB71C1C),
+                              Color(0xFF000000)
                             ]
                           ),
                           borderRadius: BorderRadius.circular(40)
                         ),
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: Image.asset("image/search_white.png")),
                   )
                 ],

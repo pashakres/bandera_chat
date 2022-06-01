@@ -5,6 +5,7 @@ import 'package:banreda_chat/services/database.dart';
 
 import '../widgets/widget.dart';
 
+
 class ConversationScreen extends StatefulWidget {
   final String chatRoomId;
 
@@ -22,10 +23,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   Stream? chatMessageStream;
 
-  Widget ChatMessageList(){
+  Widget chatMessageList(){
     return StreamBuilder(
       stream: chatMessageStream,
-      builder: (context,AsyncSnapshot<dynamic> snapshot){
+      builder: (context, AsyncSnapshot<dynamic> snapshot){
         return snapshot.data == null
           ? Container()
           : ListView.builder(
@@ -58,8 +59,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void initState() {
     databaseMethods.getConversationMessage(widget.chatRoomId).then((value){
       setState(() {
-        print("Value:");
-        print(value.toString());
         chatMessageStream = value;
       });
     });
@@ -73,19 +72,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
       body: Container(
         child: Stack(
           children: [
-            ChatMessageList(),
+            chatMessageList(),
             Container(
               alignment: Alignment.bottomCenter,
               child: Container(
-                color: Color(0xFF0D47A1),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                color: const Color(0xFF0D47A1),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Row(
                   children: [
                     Expanded(
                         child: TextField(
                          controller: messageController,
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
                               hintText: "Message...",
                               hintStyle: TextStyle(color: Colors.white54),
                               border: InputBorder.none
@@ -107,7 +106,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               ),
                               borderRadius: BorderRadius.circular(40)
                           ),
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           child: Image.asset("image/send.png")),
                     )
                   ],
@@ -136,6 +135,8 @@ class MessageTile extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isSendByMe ? const [
@@ -145,7 +146,18 @@ class MessageTile extends StatelessWidget {
               Color(0xFF383838),
               Color(0xFF282828)
             ]
-          )
+          ),
+          borderRadius: isSendByMe ?
+              const BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+                bottomLeft: Radius.circular(24),
+              ) :
+              const BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+                bottomRight: Radius.circular(24),
+              )
         ),
         child: Text(message,
           style: const TextStyle(
