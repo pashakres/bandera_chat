@@ -2,11 +2,11 @@ import 'package:banreda_chat/helper/helperfunctions.dart';
 import 'package:banreda_chat/utils/utils.dart';
 import 'package:banreda_chat/views/auth/auth_page.dart';
 import 'package:banreda_chat/views/chatrooms_screen.dart';
-import 'package:banreda_chat/views/conversation_screen.dart';
 import 'package:banreda_chat/widgets/widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
           scaffoldBackgroundColor: const Color(0xFF5BC0EB),
           primarySwatch: Colors.blue,
         ),
-        home: userIsLoggedIn ? const ConversationScreen() : const MainPage()
+        home: userIsLoggedIn ? const HomePage() : const MainPage()
     );
   }
 }

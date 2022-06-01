@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class DataBaseMethods{
   getUserByUserName(String username) async{
     return await FirebaseFirestore.instance.collection("users")
@@ -29,7 +30,8 @@ class DataBaseMethods{
   }
 
   addConversationMessage(String chatRoomId, messageMap){
-    FirebaseFirestore.instance.collection("ChatRoom")
+    FirebaseFirestore.instance
+        .collection("ChatRoom")
         .doc(chatRoomId)
         .collection("chats")
         .add(messageMap).catchError((e){
@@ -38,10 +40,18 @@ class DataBaseMethods{
   }
 
   getConversationMessage(String chatRoomId) async{
-    return await FirebaseFirestore.instance.collection("ChatRoom")
+    return await FirebaseFirestore.instance
+        .collection("ChatRoom")
         .doc(chatRoomId)
         .collection("chats")
         .orderBy("time", descending: false)
+        .snapshots();
+  }
+
+  getChatRooms(String userName) async{
+    return await FirebaseFirestore.instance
+        .collection("ChatRoom")
+        .where("users", arrayContains: userName)
         .snapshots();
   }
 }
