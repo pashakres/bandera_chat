@@ -30,6 +30,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
         return snapshot.data == null
           ? Container()
           : ListView.builder(
+              padding: EdgeInsets.only(bottom: 80),
+              reverse: true,
               itemCount: snapshot.data.docs.length,
               itemBuilder: (context, index){
                 return MessageTile(
